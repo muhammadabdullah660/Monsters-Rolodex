@@ -5,20 +5,3 @@
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-gap: 1%;
 }
-
-.cardContainer {
-  display: flex;
-  flex-direction: column;
-  background-color: #95dada;
-  border: 1px solid grey;
-  border-radius: 5px;
-  padding: 20px;
-  cursor: pointer;
-  backface-visibility: hidden;
-  transform: translateZ(0);
-  transition: transform 0.25s ease-out;
-}
-
-.cardContainer:hover {
-  transform: scale(1.05);
-}
