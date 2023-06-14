@@ -1,5 +1,5 @@
 import { Component } from "react";
-
+import "./cardListStyle.css";
 class CardList extends Component {
   render() {
     const { monsters } = this.props;
@@ -11,7 +11,7 @@ class CardList extends Component {
           return (
             <div key={monsters.id} className="cardContainer">
               <img
-                src={`https://robohash.org/${id}?set=set2`}
+                src={`https://robohash.org/${id}?set=set2&size=180x180`}
                 alt={`Monster: ${name}`}
               />
               <h3>{name}</h3>
