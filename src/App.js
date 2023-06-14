@@ -29,7 +29,15 @@ class App extends Component {
     // fetch returns a promise
     // a promise is an object that represents the eventual completion or failure of an asynchronous operation
   }
-
+  // this method is called before the component is rendered(doesn't reinitialize the on every event)
+  onSearchChange = (event) => {
+    const searchString = event.target.value.toLocaleLowerCase();
+    this.setState(() => {
+      return {
+        searchString: searchString,
+      };
+    });
+  };
   render() {
     console.log("render");
     const filteredMonsters = this.state.monsters.filter((monster) => {
@@ -40,14 +48,8 @@ class App extends Component {
         <input
           type="search"
           placeholder="search monsters"
-          onChange={(event) => {
-            const searchString = event.target.value.toLocaleLowerCase();
-            this.setState(() => {
-              return {
-                searchString: searchString,
-              };
-            });
-          }}
+          // onChange is a react event
+          onChange={this.onSearchChange}
         />
         {filteredMonsters.map((monsters) => (
           <div key={monsters.id}>
