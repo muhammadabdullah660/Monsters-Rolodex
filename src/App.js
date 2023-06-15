@@ -1,65 +1,50 @@
+import { useState, useEffect } from "react";
 import "./App.css";
-import { Component } from "react";
 import CardList from "./Components/CardList/cardListComponent";
 import SearchBox from "./Components/SearchBox/searchBoxComponent";
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      monsters: [],
-      searchField: "",
-    };
-    //console.log("constructor");
-  }
 
-  componentDidMount() {
-    //console.log("componentDidMount");
-    // this method is called after the component is rendered
-    // fetch is a method that allows us to make a request to an api
+//Pure Function is a function that given the same input will always return the same output
+// it doesn't depend on anything else in the program
+// it doesn't change anything in the program
+// it doesn't have any side effects
+//Impure Function is a function that given the same input will not always return the same output
+// it depends on something else in the program
+// it changes something in the program
+// it has side effects
+//Side Effects are anything that affects something outside of the scope of the function
+// for example: changing a variable outside of the function, changing the dom, making an http request, etc
+
+const App = () => {
+  const [monsters, setMonsters] = useState([]);
+  const [searchField, setSearchField] = useState("");
+  const [filteredMonsters, setFilteredMonsters] = useState([]);
+
+  useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/users").then((response) =>
-      response.json().then((users) =>
-        this.setState(
-          () => {
-            return { monsters: users };
-          },
-          () => {
-            console.log(this.state);
-          }
-        )
-      )
+      response.json().then((users) => setMonsters(users))
     );
-    // fetch returns a promise
-    // a promise is an object that represents the eventual completion or failure of an asynchronous operation
-  }
-  // this method is called before the component is rendered(doesn't reinitialize the on every event)
-  // not unnecessary re-rendering
-  onSearchChange = (event) => {
-    const searchField = event.target.value.toLocaleLowerCase();
-    this.setState(() => {
-      return {
-        searchField: searchField,
-      };
-    });
-  };
-  render() {
-    //console.log("render");
-    const { monsters, searchField } = this.state;
-    const { onSearchChange } = this;
-    const filteredMonsters = monsters.filter((monster) => {
+  }, []);
+  useEffect(() => {
+    const newFilteredMonsters = monsters.filter((monster) => {
       return monster.name.toLowerCase().includes(searchField);
     });
-    return (
-      <div className="App">
-        <h1>Monster's Rolodex </h1>
-        <SearchBox
-          onChangeHandler={onSearchChange}
-          placeholder="Search Monster Name"
-          name="searchMonster"
-        />
-        <CardList monsters={filteredMonsters} />
-      </div>
-    );
-  }
-}
+    setFilteredMonsters(newFilteredMonsters);
+  }, [monsters, searchField]);
+  const onSearchChange = (event) => {
+    const searchFieldString = event.target.value.toLocaleLowerCase();
+    setSearchField(searchFieldString);
+  };
 
+  return (
+    <div className="App">
+      <h1>Monster's Rolodex </h1>
+      <SearchBox
+        onChangeHandler={onSearchChange}
+        placeholder="Search Monster Name"
+        name="searchMonster"
+      />
+      <CardList monsters={filteredMonsters} />
+    </div>
+  );
+};
 export default App;
