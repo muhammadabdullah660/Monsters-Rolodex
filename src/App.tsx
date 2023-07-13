@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import "./App.css";
 import CardList from "./Components/CardList/cardListComponent";
 import SearchBox from "./Components/SearchBox/searchBoxComponent";
-
+import { getData } from "./utils/data";
 //Pure Function is a function that given the same input will always return the same output
 // it doesn't depend on anything else in the program
 // it doesn't change anything in the program
@@ -14,15 +14,25 @@ import SearchBox from "./Components/SearchBox/searchBoxComponent";
 //Side Effects are anything that affects something outside of the scope of the function
 // for example: changing a variable outside of the function, changing the dom, making an http request, etc
 
+export type Monster = {
+  id: number;
+  name: string;
+  email: string;
+};
+
 const App = () => {
-  const [monsters, setMonsters] = useState([]);
+  const [monsters, setMonsters] = useState<Monster[]>([]);
   const [searchField, setSearchField] = useState("");
-  const [filteredMonsters, setFilteredMonsters] = useState([]);
+  const [filteredMonsters, setFilteredMonsters] = useState<Monster[]>([]);
 
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/users").then((response) =>
-      response.json().then((users) => setMonsters(users))
-    );
+    const fetchUsers = async () => {
+      const users = await getData<Array<Monster>>(
+        "https://jsonplaceholder.typicode.com/users"
+      );
+      setMonsters(users);
+    };
+    fetchUsers();
   }, []);
   useEffect(() => {
     const newFilteredMonsters = monsters.filter((monster) => {
@@ -30,7 +40,7 @@ const App = () => {
     });
     setFilteredMonsters(newFilteredMonsters);
   }, [monsters, searchField]);
-  const onSearchChange = (event) => {
+  const onSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const searchFieldString = event.target.value.toLocaleLowerCase();
     setSearchField(searchFieldString);
   };
@@ -41,7 +51,6 @@ const App = () => {
       <SearchBox
         onChangeHandler={onSearchChange}
         placeholder="Search Monster Name"
-        name="searchMonster"
       />
       <CardList monsters={filteredMonsters} />
     </div>
